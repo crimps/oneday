@@ -14,6 +14,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
