@@ -29,6 +29,11 @@ public class MainUI extends JFrame {
     private JPanel mainUIPanel;
     private PasswordPanel passwordPanel;
     private LoadingDataPanel loadingDataPanel;
+    private FunctionPanel functionPanel;
+
+    public MainUI getMainUI() {
+        return this;
+    }
 
     public MainUI() {
         initPath();
@@ -60,13 +65,26 @@ public class MainUI extends JFrame {
             Thread.sleep(3000);
             initPanel();
             initDB();
+            functionPanel = new FunctionPanel();
             //初始化完成后加载面板
-            mainUIPanel.removeAll();
-            mainUIPanel.add(passwordPanel);
-            mainUIPanel.updateUI();
+            if (isLock) {
+                mainUIPanel.removeAll();
+                mainUIPanel.add(passwordPanel);
+                mainUIPanel.updateUI();
+                passwordPanel.requestFocus();
+            } else {
+                loadFunctionPanel();
+            }
+
         } catch (Exception e) {
 
         }
+    }
+
+    public void loadFunctionPanel() {
+        mainUIPanel.removeAll();
+        mainUIPanel.add(functionPanel);
+        mainUIPanel.updateUI();
     }
 
     private void initPath() {
@@ -94,7 +112,6 @@ public class MainUI extends JFrame {
      * 初始化面板
      */
     private void initPanel() {
-
-        passwordPanel = new PasswordPanel("oneday");
+        passwordPanel = new PasswordPanel(getMainUI(),"123456");
     }
 }

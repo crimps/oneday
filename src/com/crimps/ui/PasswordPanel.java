@@ -1,9 +1,10 @@
 package com.crimps.ui;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /**
  * 解锁界面
@@ -16,130 +17,64 @@ public class PasswordPanel extends BasePanel {
     /**
      * 密码框宽度
      */
-    private int TEXT_FIELD_WIDTH = 30;
+    private final int TEXT_FIELD_WIDTH = 30;
 
     /**
      * 密码框高度
      */
-    private int TEXT_FIELD_HEIGHT = 30;
+    private final int TEXT_FIELD_HEIGHT = 30;
 
     private String password;
-    private JTextField oneTextField;
-    private JTextField twoTextField;
-    private JTextField threeTextField;
-    private JTextField fourTextField;
+    private StringBuffer inPassword = new StringBuffer("");
+    private java.util.List<JPasswordField> passwordFieldList;
     private JLabel tipLabel;
+    private MainUI mainUI;
 
-    public PasswordPanel(String password) {
+    public PasswordPanel(final MainUI mainUI, final String password) {
         this.password = password;
+        this.mainUI = mainUI;
         this.setLayout(new BorderLayout());
         JPanel centerPanel = new JPanel();
         init();
-        centerPanel.add(oneTextField);
-        centerPanel.add(twoTextField);
-        centerPanel.add(threeTextField);
-        centerPanel.add(fourTextField);
+        for (JPasswordField passwordField : passwordFieldList) {
+            centerPanel.add(passwordField);
+        }
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(tipLabel, BorderLayout.SOUTH);
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+                tipLabel.setText("");
+                inPassword.append(e.getKeyChar());
+                passwordFieldList.get(inPassword.length() - 1).setText(" ");
+                if (inPassword.length() == password.length()) {
+                    if (password.equals(inPassword.toString())) {
+                        mainUI.getMainUI().loadFunctionPanel();
+                    } else {
+                        inPassword.setLength(0);
+                        tipLabel.setText(getString("PasswordPanel.tip_pwd_error"));
+                        for (JPasswordField passwordField : passwordFieldList) {
+                            passwordField.setText("");
+                        }
+                    }
+                }
+
+            }
+        });
     }
 
     /**
      * 初始化密码输入框
      */
     private void init() {
-        initOneTextField();
-        initTwoTextField();
-        initThreeTextField();
-        initFourTextField();
-        initTipLabel();
-    }
-
-    private void initTipLabel() {
-        tipLabel = new JLabel(getString("PasswordPanel.tip_pwd_error"));
-    }
-
-    /**
-     * 初始化第一位密码输入框
-     */
-    private void initOneTextField() {
-        oneTextField = new JTextField();
-        oneTextField.setPreferredSize(new Dimension(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT));
-        oneTextField.grabFocus();
-        oneTextField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                twoTextField.grabFocus();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-
-            }
-
-            public void changedUpdate(DocumentEvent e) {
-
-            }
-        });
-    }
-
-    /**
-     * 初始化第二位密码输入框
-     */
-    private void initTwoTextField() {
-        twoTextField = new JTextField();
-        twoTextField.setPreferredSize(new Dimension(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT));
-        twoTextField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                threeTextField.grabFocus();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                oneTextField.grabFocus();
-            }
-
-            public void changedUpdate(DocumentEvent e) {
-
-            }
-        });
-    }
-
-    /**
-     * 初始化第三位密码输入框
-     */
-    private void initThreeTextField() {
-        threeTextField = new JTextField();
-        threeTextField.setPreferredSize(new Dimension(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT));
-        threeTextField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                fourTextField.grabFocus();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                twoTextField.grabFocus();
-            }
-
-            public void changedUpdate(DocumentEvent e) {
-
-            }
-        });
-    }
-
-    /**
-     * 初始化第四位密码输入框
-     */
-    private void initFourTextField() {
-        fourTextField = new JTextField();
-        fourTextField.setPreferredSize(new Dimension(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT));
-        fourTextField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                threeTextField.grabFocus();
-            }
-
-            public void changedUpdate(DocumentEvent e) {
-
-            }
-        });
+        passwordFieldList = new ArrayList<>();
+        for (int i = 0; i < password.length(); i++) {
+            JPasswordField passwordField = new JPasswordField();
+            passwordField.setFocusable(false);
+            passwordField.setPreferredSize(new Dimension(TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT));
+            passwordFieldList.add(passwordField);
+        }
+        tipLabel = new JLabel();
     }
 }
