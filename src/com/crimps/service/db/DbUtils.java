@@ -1,6 +1,5 @@
 package com.crimps.service.db;
 
-import com.crimps.entiey.TestEntity;
 import com.crimps.ui.MainUI;
 import org.apache.commons.lang.StringUtils;
 

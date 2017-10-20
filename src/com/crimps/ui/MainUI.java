@@ -4,6 +4,8 @@ import com.crimps.service.db.DbUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -44,6 +46,13 @@ public class MainUI extends JFrame {
         };
         initThread.start();
         this.getContentPane().add(mainUIPanel);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                dbUtils.close();
+            }
+        });
     }
 
     private void init() {
