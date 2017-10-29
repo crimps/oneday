@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import static java.lang.System.exit;
+
 /**
  * oneday主界面
  *
@@ -19,6 +21,9 @@ import java.net.URLDecoder;
 public class MainUI extends JFrame {
 
     public static String rootPath;
+
+    private final int MAINUI_WIDTH = 940;
+    private final int MAINUI_HEIGHT = 700;
 
     /**
      * 是否锁定：true:锁定;false:已解锁
@@ -42,7 +47,7 @@ public class MainUI extends JFrame {
         mainUIPanel.setLayout(new BorderLayout());
         loadingDataPanel = new LoadingDataPanel();
         mainUIPanel.add(loadingDataPanel, BorderLayout.CENTER);
-        this.setSize(300, 200);
+        this.setSize(MAINUI_WIDTH, MAINUI_HEIGHT);
         Thread initThread = new Thread(){
             @Override
             public void run() {
@@ -54,8 +59,10 @@ public class MainUI extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
                 dbUtils.close();
+                super.windowClosing(e);
+                //关闭进程
+                exit(0);
             }
         });
     }
